@@ -7,32 +7,34 @@ The app is a shell around the open-aim web game. To run, it needs the game's fil
 open-aim/
 ├─ app/
 ├─ scenarios/
-├─ site/            ← game files go here (not in git)
+├─ site/            ← game files
 │  ├─ aim/
 │  ├─ aim-maps/
 │  ├─ aim-agents/
 │  ├─ _assets/
 │  └─ …
-└─ site_meta.json   ← response headers for the site files (not in git)
+└─ site_meta.json   ← response headers for the site files
 ```
 
 `app/main.js` serves this folder on `http://127.0.0.1:8000` and opens it in the app window.
 
-## Why they aren't in the repository
+## This repository is private, and includes them
 
-- **Size:** the site folder is about 190 MB, mostly 3D maps and textures. Git is made for
-  text, and GitHub warns about files over 50 MB.
-- **Rights:** some of the maps, character models, weapon models and sounds come from a
-  commercial game. An open-source license can only cover work you own, so those files can't
-  be published here.
+This private copy keeps `site/` and `site_meta.json` in git so the app runs straight after a
+clone. **Remove them before making the repository public:**
 
-`.gitignore` lists `site/`, `site_meta.json` and `app/mods/`, so git never picks them up,
-even by accident.
+- **Rights:** the game engine and drills come from another developer's web trainer, and the
+  maps, character models, weapon models and sounds come from a commercial game. None of that
+  can be published under this project's license.
+- **Size:** the site folder is about 190 MB, mostly 3D maps and textures.
+
+To publish only the parts that are yours, delete `site/` and `site_meta.json` from the
+repository and add both to `.gitignore`.
 
 ## Optional: mods
 
 Files in `app/mods/` replace the site file at the same path (for example a weapon skin in
-`app/mods/aim-viewmodel/`). They're also kept out of git.
+`app/mods/aim-viewmodel/`).
 
 ## The long-term goal
 
