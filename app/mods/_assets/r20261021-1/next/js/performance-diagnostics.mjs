@@ -182,7 +182,9 @@ export const performanceDiagnostics = createPerformanceDiagnostics();
 // shows the monitor's refresh rate.
 export function recordGameFrame(at, running, cap, nth) { globalThis.__aimGameFrame?.(at); performanceDiagnostics.recordFrame(at, running, cap, nth); }
 export function stopGameFrames() { performanceDiagnostics.stop(); }
-export function recordGameWork(at, tickMs, renderMs, ticks, gpuWaits, counters) {
+// open-aim: also report the CPU time of each frame (simulation ticks and drawing) to
+// the FPS meter, so it can tell CPU-bound frames from GPU-bound ones.
+export function recordGameWork(at, tickMs, renderMs, ticks, gpuWaits, counters) { globalThis.__aimGameWork?.(tickMs, renderMs);
   performanceDiagnostics.recordWork('tick', tickMs, at, ticks);
   performanceDiagnostics.recordWork('render', renderMs, at, 1, { ...counters, gpuWaits });
 }

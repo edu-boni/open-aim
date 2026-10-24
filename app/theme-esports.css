@@ -528,6 +528,7 @@ html[data-aim-local]:not(#es) body .al-studio-step-input { color: var(--es-red-2
   --es-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --es-spring: cubic-bezier(0.2, 0.9, 0.2, 1.15);
   --es-glass: rgba(14, 17, 23, 0.58);
+  --es-glass-blur: blur(20px) saturate(1.5);
   --es-glass-edge: rgba(255, 255, 255, 0.12);
 }
 @keyframes es-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
@@ -619,7 +620,7 @@ html[data-aim-local]:not(#es) body :is(.al-wk-chip.al-wk-on, .al-wk-toggle.is-on
 /* glass panels: menus, dialogs, results, pre-aim sheet, guided editor */
 html[data-aim-local]:not(#es) body :is(.al-pause-lite-body, .al-pause-id, .al-pause-acts, .al-aim-aids-sheet, .al-result-modal, .el-dialog, .el-popper, .el-dropdown-menu, .el-select-dropdown) {
   background: var(--es-glass) !important;
-  backdrop-filter: blur(20px) saturate(1.5) !important;
+  backdrop-filter: var(--es-glass-blur) !important;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
 }
 html[data-aim-local]:not(#es) body :is(.al-pause-lite-body, .al-pause-id, .al-pause-acts, .al-aim-aids-sheet) { outline: 1px solid var(--es-glass-edge); outline-offset: -1px; }
@@ -912,3 +913,26 @@ html[data-aim-local]:not(#es) body .al-trainer-shell { background: var(--es-bg) 
 .es-sens-convert span { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #9aa1ae; }
 .es-sens-convert b { flex: 1; font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .es-sens-num { flex: none; font-size: 18px !important; font-variant-numeric: tabular-nums; }
+/* "Restart to apply" link in the Map culling setting (map-culling.js) */
+.es-map-culling-restart { padding: 0; border: 0; background: none; color: var(--es-red-2); font: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; }
+.es-map-culling-restart[hidden], .es-map-culling-hint[hidden] { display: none !important; }
+
+/* ================= Interface: Performance (interface-mode.js; Enhanced is the default) =================
+   Enhanced keeps everything above. Performance drops the effects that cost GPU time on
+   every frame without changing the layout. */
+/* No glass blur: re-blurring what is behind a panel runs every frame, hundreds of times a
+   second with no frame limit. Glass panels get a near-solid fill instead. */
+:root[data-es-ui="performance"] {
+  --es-glass: rgba(14, 17, 23, 0.92);
+  --es-glass-blur: none;
+}
+html[data-es-ui="performance"] *,
+html[data-es-ui="performance"] *::before,
+html[data-es-ui="performance"] *::after {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+/* The lobby stays in the page under a round; skip it instead of compositing its layers. */
+html[data-es-ui="performance"] body:has(.al-trainer-shell.al-session-active) > #app { content-visibility: hidden; }
+/* No looping pulse on "Click anywhere to start". */
+html[data-es-ui="performance"] .al-aimlab-root .al-scene-start-cue { animation: none !important; }

@@ -25,6 +25,8 @@
       "ui.css",
       "theme-esports.css",
       "lobby-bar.js",
+      "map-culling.js",
+      "interface-mode.js",
       "player-tools.js",
       "backups.js",
       "offline.css",

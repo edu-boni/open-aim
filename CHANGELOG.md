@@ -8,6 +8,16 @@ All notable changes to open-aim. Newest first.
 
 - Desktop frame settings in Video: Frame mode (No frame limit), an FPS cap up to 1000
   and a VSync toggle with a restart button.
+- Map culling (Video > Smoothness, off by default): maps are batched in 32 m chunks so
+  only the parts in view are drawn. Same picture, 50-80% fewer triangles. Turn it on
+  for laptops and integrated graphics; on strong graphics cards it can lower FPS.
+- FPS meter shows the game's CPU time per frame in rounds.
+- Interface setting (Video > Smoothness): Enhanced (default) or Performance, with solid
+  panels instead of glass blur.
+
+### Fixed
+
+- Shader warm-up no longer throws and stalls when a map's materials are replaced.
 
 ## [1.0.0] - 2026-10-23
 

@@ -34,6 +34,8 @@
 | `ui.css` | Compact pause and results menus |
 | `offline.css` | Hides sign-in, leaderboards and other online-only parts |
 | `lobby-bar.js` | Top bar (Favorites, Creator, Quick start), FPS meter, smooth scrolling |
+| `map-culling.js` | Map culling setting in Video settings (off by default, for laptops and integrated graphics): splits the map into 32 m chunks so only the parts in view are drawn (the split itself is in `mods/.../BiMsX6Xn.js`) |
+| `interface-mode.js` | Interface setting in Video settings: Enhanced (default, full theme) or Performance (no glass blur, lobby paused in rounds) |
 | `player-tools.js` | Backups and Sens tools panels |
 | `studio/` | The Studio: `studio.js` (editor UI), `drill.js` (turns a layout into a playable drill), `map-data.js` (map outlines), `view3d.js` (3D preview), `vendor/` (three.js, MIT) |
 | `studio-store.js` | Saves your Studio drills so they show up in the lobby |
