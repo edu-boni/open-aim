@@ -62,10 +62,6 @@ const THEME_CSS = fs.readFileSync(path.join(__dirname, "theme-esports.css"), "ut
 const OFFLINE_CSS = fs.readFileSync(path.join(__dirname, "offline.css"), "utf-8");
 // Moves the lobby sidebar (Quick start, Favorites, Creator, Manual) into the top bar.
 const LOBBY_BAR_JS = fs.readFileSync(path.join(__dirname, "lobby-bar.js"), "utf-8");
-// Map culling setting (Settings > Video > Smoothness); see map-culling.js.
-const MAP_CULLING_JS = fs.readFileSync(path.join(__dirname, "map-culling.js"), "utf-8");
-// Interface: Performance / Enhanced (Settings > Video > Smoothness).
-const INTERFACE_MODE_JS = fs.readFileSync(path.join(__dirname, "interface-mode.js"), "utf-8");
 // Backups and sensitivity panels opened from the top bar.
 const PLAYER_TOOLS_JS = fs.readFileSync(path.join(__dirname, "player-tools.js"), "utf-8");
 
@@ -364,8 +360,6 @@ function createWindow(url) {
     win.webContents.insertCSS(THEME_CSS);
     win.webContents.insertCSS(OFFLINE_CSS);
     win.webContents.executeJavaScript(PLAYER_TOOLS_JS).catch((err) => console.log(`PLAYER TOOLS: ${err}`));
-    win.webContents.executeJavaScript(MAP_CULLING_JS).catch((err) => console.log(`MAP CULLING: ${err}`));
-    win.webContents.executeJavaScript(INTERFACE_MODE_JS).catch((err) => console.log(`INTERFACE MODE: ${err}`));
     win.webContents.executeJavaScript(LOBBY_BAR_JS).catch((err) => console.log(`LOBBY BAR: ${err}`));
     win.webContents.executeJavaScript(STUDIO_LAUNCH_JS).catch((err) => console.log(`STUDIO LAUNCH: ${err}`));
     win.webContents.executeJavaScript(SHOT_GRAPH_JS).catch((err) => console.log(`SHOT GRAPH: ${err}`));
@@ -434,12 +428,9 @@ ipcMain.on("aim:shell:vsync", (_event, on) => {
     console.log(`SHELL SETTINGS: ${err}`);
   }
 });
-// The portable build runs from a temporary copy, so relaunch the .exe itself. Settings
-// saved in the page's localStorage just before (map culling) are flushed first, since
-// app.exit skips Chromium's normal shutdown.
+// The portable build runs from a temporary copy, so relaunch the .exe itself.
 ipcMain.on("aim:shell:restart", () => {
   const exe = process.env.PORTABLE_EXECUTABLE_FILE;
-  session.defaultSession.flushStorageData();
   app.relaunch(exe ? { execPath: exe } : undefined);
   app.exit(0);
 });

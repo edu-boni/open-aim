@@ -36,13 +36,9 @@
     if (meter) return;
     meter = document.createElement("div");
     meter.className = "es-fps";
-    meter.innerHTML = '<b>–</b><span>FPS</span><small>– ms · 1% low –</small><small hidden></small>';
+    meter.innerHTML = '<b>–</b><span>FPS</span><small>– ms · 1% low –</small>';
     document.body.appendChild(meter);
-    const [fpsEl, , detailEl, cpuEl] = meter.children;
-    // In rounds, the game's own CPU time per frame: simulation ticks + drawing. When
-    // it is well below the frame time, the GPU is the limit.
-    const work = []; // [time, tick ms, render ms]
-    window.__aimGameWork = (tickMs, renderMs) => work.push([performance.now(), tickMs, renderMs]);
+    const [fpsEl, , detailEl] = meter.children;
     const frames = []; // [time, frame duration]
     let last = performance.now();
     let shown = 0;
@@ -53,13 +49,13 @@
     let gameSeen = -Infinity;
     window.__aimGameFrame = (at) => {
       const now = performance.now();
-      if (now - gameSeen > 1000) frames.length = 0;
-      if (gameLast && now - gameSeen <= 1000) frames.push([now, now - gameLast]);
+      if (now - gameSeen > 250) frames.length = 0;
+      if (gameLast && now - gameSeen <= 250) frames.push([now, now - gameLast]);
       gameLast = now;
       gameSeen = now;
     };
     const tick = (now) => {
-      if (now - gameSeen > 1000) {
+      if (now - gameSeen > 250) {
         if (gameLast) {
           frames.length = 0;
           gameLast = 0;
@@ -67,7 +63,7 @@
       }
       last = now;
       while (frames.length && now - frames[0][0] > 5000) frames.shift();
-      if (now - shown > 250 && frames.length >= 3) {
+      if (now - shown > 250 && frames.length > 10) {
         shown = now;
         const second = frames.filter((f) => now - f[0] <= 1000);
         const avg = second.reduce((s, f) => s + f[1], 0) / second.length;
@@ -77,14 +73,6 @@
         const low = Math.round(1000 / p99);
         fpsEl.textContent = fpsNow;
         detailEl.textContent = `${avg.toFixed(1)} ms · 1% low ${low}`;
-        while (work.length && now - work[0][0] > 1000) work.shift();
-        const inRound = now - gameSeen <= 1000 && work.length > 0;
-        cpuEl.hidden = !inRound;
-        if (inRound) {
-          const sim = work.reduce((s, w) => s + w[1], 0) / work.length;
-          const draw = work.reduce((s, w) => s + w[2], 0) / work.length;
-          cpuEl.textContent = `CPU ${(sim + draw).toFixed(1)} ms · sim ${sim.toFixed(1)} · draw ${draw.toFixed(1)}`;
-        }
         meter.dataset.tone = low >= fpsNow * 0.7 ? "good" : low >= fpsNow * 0.4 ? "ok" : "bad";
       }
       meterRaf = requestAnimationFrame(tick);
@@ -95,7 +83,6 @@
   function stopMeter() {
     cancelAnimationFrame(meterRaf);
     window.__aimGameFrame = null;
-    window.__aimGameWork = null;
     meter?.remove();
     meter = null;
   }
