@@ -54,8 +54,7 @@ Common types: `feat`, `fix`, `perf`, `docs`, `style`, `chore`.
 
 ## Rules for files
 
-- **Never commit game files** (maps, models, textures, sounds) or anything from `site/`.
-  They aren't ours to share. `.gitignore` already keeps them out.
+- Send drills as files in `scenarios/`, not as changes to `site/`.
 - Only submit work that's yours, or that's under a license that allows sharing it (say which).
 - No personal data: no backups, logs, or files from `%APPDATA%\AimTrainer`.
 

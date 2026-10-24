@@ -18,5 +18,5 @@
 
 - [ ] `node scripts/build-scenarios.mjs --check` passes
 - [ ] I tried it in the real app
-- [ ] No game files, backups, logs or personal files are included
+- [ ] No backups, logs or personal files are included
 - [ ] Everything here is my own work, or I've named its license

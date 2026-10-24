@@ -2,7 +2,7 @@
 
 A hands-on guide to git and GitHub, using this project as the example. Every step works on
 your own PC first. Nothing goes online until you choose to push, and you can keep the
-repository **private** so only you can see it.
+repository **official** so anyone can see it.
 
 ## 1. The words you'll see
 
@@ -15,7 +15,7 @@ repository **private** so only you can see it.
 | **Issue** | A bug report or idea, with a comment thread (see `.github/ISSUE_TEMPLATE/`) |
 | **Pull request (PR)** | "Please merge my branch into `main`", with review comments and checks |
 | **Fork** | Someone's own copy of your repo on GitHub, where they make changes to send back as a PR |
-| **`.gitignore`** | The list of files git never tracks. Here: game files, logs, `node_modules` |
+| **`.gitignore`** | The list of files git never tracks. Here: logs, `node_modules` |
 | **Actions (CI)** | Checks GitHub runs on every PR. Here: `.github/workflows/check.yml` |
 
 ## 2. Install git
@@ -98,7 +98,7 @@ git merge add-my-drill
 That's the whole cycle contributors follow: branch, change, check, commit, merge.
 On GitHub, the merge happens through a pull request instead.
 
-## 5. Put it on GitHub (private)
+## 5. Put it on GitHub (official)
 
 1. Create a free account at github.com.
 2. Click **New repository**, name it `open-aim`, choose **Private**, and don't add a README
@@ -114,8 +114,8 @@ git push -u origin main
 ```
 
 Open the repo page. You'll see the files, the README rendered on the front page, and the
-**Issues**, **Pull requests** and **Actions** tabs, just like a real open-source project. Only you
-can see it while it's private.
+**Issues**, **Pull requests** and **Actions** tabs, just like a real open-source project. Anyone
+can see it now that it's official.
 
 ## 6. Things to try on GitHub
 
@@ -135,8 +135,8 @@ can see it while it's private.
 ## 7. Golden rules
 
 - Commit small and often, with clear messages.
-- Never commit game files, backups, passwords or tokens. If git lists something you don't
+- Never commit backups, passwords or tokens. If git lists something you don't
   expect, add it to `.gitignore` before `git add`.
 - `git status` before every commit. It's free and catches mistakes.
 - A private repo can be made public later in **Settings**, but anything ever pushed stays in
-  the history. Keep game files out from the very first commit.
+  the history. Keep passwords and tokens out from the very first commit.
