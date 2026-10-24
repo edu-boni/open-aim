@@ -101,7 +101,7 @@ keeps every run.
 2. Open **Sens tools**, pick your game, enter your sens and DPI.
 3. Press **Quick start**.
 
-Windows 10 or 11, any GPU with WebGL 2.
+Requires Windows 10 or 11, any GPU with WebGL 2.
 
 <br>
 
