@@ -358,6 +358,47 @@ html[data-aim-local]:not(#es) body .al-hud-chip :is(span, small, em) { text-tran
 html[data-aim-local]:not(#es) body .al-scene-start-cue :is(h1, h2, strong, b) { font-stretch: 75% !important; text-transform: uppercase !important; font-weight: 800 !important; font-style: italic; letter-spacing: 0.03em; }
 html[data-aim-local]:not(#es) body .al-scene-start-cue :is(button, [class*="chip"], [class*="pill"]) { border-radius: 0 !important; }
 
+/* ---------- round start screen ("Click anywhere to start"): minimal, lobby look ---------- */
+html[data-aim-local]:not(#es) body .al-scene-start {
+  background: radial-gradient(60% 45% at 50% 55%, rgba(9, 11, 15, 0.7), rgba(9, 11, 15, 0.25) 60%, rgba(9, 11, 15, 0) 85%) !important;
+}
+html[data-aim-local]:not(#es) body .al-scene-start-inner {
+  display: flex !important; flex-direction: column; align-items: center; gap: 6px;
+  background: none !important; border: none !important; box-shadow: none !important; padding: 0 !important;
+}
+html[data-aim-local]:not(#es) body .al-scene-start-title {
+  display: flex; align-items: center; gap: 8px;
+  color: var(--es-red-2) !important; font: 700 14px var(--es-head) !important; font-stretch: 75% !important;
+  letter-spacing: 0.14em !important; text-transform: uppercase !important;
+}
+html[data-aim-local]:not(#es) body .al-scene-start-title::before { content: ""; width: 4px; height: 14px; background: var(--es-red); transform: skewX(-14deg); }
+html[data-aim-local]:not(#es) body .al-scene-start-cue {
+  color: #fff !important; font: italic 800 44px/1 var(--es-head) !important; font-stretch: 75% !important;
+  letter-spacing: 0.02em !important; text-transform: uppercase !important; text-shadow: 0 2px 18px rgba(0, 0, 0, 0.6);
+  animation: es-start-pulse 1.8s ease-in-out infinite;
+}
+@keyframes es-start-pulse { 50% { opacity: 0.72; } }
+html[data-aim-local]:not(#es) body .al-scene-start-hint {
+  color: var(--es-muted) !important; font: 700 12px var(--es-head) !important; font-stretch: 75% !important;
+  letter-spacing: 0.16em !important; text-transform: uppercase !important;
+}
+html[data-aim-local]:not(#es) body .al-scene-start-aids { margin-top: 10px; }
+html[data-aim-local]:not(#es) body .al-scene-start-aids button {
+  height: 30px; padding: 0 12px !important; border: 1px solid var(--es-line-2) !important; border-radius: 0 !important;
+  background: rgba(9, 11, 15, 0.7) !important; color: var(--es-soft) !important; box-shadow: none !important;
+  font: 700 12px var(--es-head) !important; font-stretch: 75% !important; letter-spacing: 0.08em !important; text-transform: uppercase !important;
+}
+html[data-aim-local]:not(#es) body .al-scene-start-aids button span { margin-left: 6px; color: var(--es-red-2) !important; }
+html[data-aim-local]:not(#es) body .al-scene-start-aids button:hover { border-color: var(--es-red) !important; color: #fff !important; }
+html[data-aim-local]:not(#es) body .al-scene-start-back {
+  height: 40px; padding: 0 16px 0 14px !important; border: none !important; border-left: 3px solid var(--es-red) !important; border-radius: 0 !important;
+  background: rgba(9, 11, 15, 0.85) !important; color: #fff !important; box-shadow: none !important; backdrop-filter: blur(8px);
+  font: 700 13px var(--es-head) !important; font-stretch: 75% !important; letter-spacing: 0.06em !important; text-transform: uppercase !important;
+}
+html[data-aim-local]:not(#es) body .al-scene-start-back::before { content: "‹  "; color: var(--es-red-2); }
+html[data-aim-local]:not(#es) body .al-scene-start-back:hover { background: var(--es-red) !important; }
+html[data-aim-local]:not(#es) body .al-scene-start-back:hover::before { color: #fff; }
+
 /* ---------- pause and Tab menus (overrides ui.css cards) ---------- */
 html[data-aim-local]:not(#es) body :is(.al-pause-lite-body, .al-pause-id, .al-pause-acts) {
   background: rgba(9, 11, 15, 0.94) !important;
