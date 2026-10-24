@@ -101,7 +101,7 @@ keeps every run.
 2. Open **Sens tools**, pick your game, enter your sens and DPI.
 3. Press **Quick start**.
 
-Windows 10 or 11, any GPU with WebGL 2. A 144 Hz monitor helps. `F11` toggles fullscreen, `Esc` pauses.
+Windows 10 or 11, any GPU with WebGL 2.
 
 <br>
 
