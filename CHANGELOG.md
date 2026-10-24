@@ -2,6 +2,16 @@
 
 All notable changes to open-aim. Newest first.
 
+## [1.1.1] - 2026-10-24
+
+Back to the stable build from before map culling: uncapped FPS, the accurate FPS meter
+and the esports start screen stay.
+
+### Removed
+
+- Map culling, the Interface setting and the CPU line on the FPS meter. Map culling
+  lowered performance on some PCs; they may come back once they are tested further.
+
 ## [1.1.0] - 2026-10-24
 
 ### Added

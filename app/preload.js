@@ -30,10 +30,6 @@ contextBridge.exposeInMainWorld("__aimDesktop", {
 const shellInfo = ipcRenderer.sendSync("aim:shell:info");
 
 webFrame.executeJavaScript(`(() => {
-  // Map culling (map-culling.js): chunk size in metres for the map batching in
-  // mods/.../BiMsX6Xn.js, set before any map loads. 0 keeps the original batching.
-  try { globalThis.__aimChunk = localStorage.getItem("es-map-culling") === "on" ? 32 : 0; } catch { globalThis.__aimChunk = 0; }
-
   const request = function () { window.__aimDesktop.fullscreen(); return Promise.resolve(); };
   Element.prototype.requestFullscreen = request;
   if (Element.prototype.webkitRequestFullscreen) Element.prototype.webkitRequestFullscreen = request;
