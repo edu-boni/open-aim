@@ -2,6 +2,13 @@
 
 All notable changes to open-aim. Newest first.
 
+## [Unreleased]
+
+### Added
+
+- Desktop frame settings in Video: Frame mode (No frame limit), an FPS cap up to 1000
+  and a VSync toggle with a restart button.
+
 ## [1.0.0] - 2026-10-23
 
 First version as a repository.

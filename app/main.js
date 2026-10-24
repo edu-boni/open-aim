@@ -1,7 +1,7 @@
 ﻿// Desktop wrapper for the offline open-aim game.
 // Serves the site folder on 127.0.0.1:8000 exactly like aim_offline.py and
 // opens http://localhost:8000/aim in a window.
-const { app, BrowserWindow, Menu, dialog, ipcMain, session, shell } = require("electron");
+const { app, BrowserWindow, Menu, dialog, ipcMain, screen, session, shell } = require("electron");
 const fs = require("fs");
 const http = require("http");
 const path = require("path");
@@ -133,10 +133,21 @@ if (!app.requestSingleInstanceLock()) {
   process.exit(0);
 }
 
+// Desktop settings the game shows only in its own desktop shell (window.aimDesktop,
+// see preload.js): VSync on/off. Chromium reads its switches only at startup, so a
+// change is saved here and applied at the next launch (the game offers a restart).
+const SHELL_FILE = path.join(app.getPath("userData"), "shell-settings.json");
+let shellSettings = { vsync: false };
+try {
+  shellSettings = { ...shellSettings, ...JSON.parse(fs.readFileSync(SHELL_FILE, "utf-8")) };
+} catch {}
+const VSYNC = shellSettings.vsync === true;
+
 // Performance: no vsync, discrete GPU, no throttling. Measured on a 240 Hz
 // display: vsync off renders at the full refresh rate (240 FPS), while adding
 // "disable-frame-rate-limit" drops this Chromium back to a fixed 60 FPS.
-app.commandLine.appendSwitch("disable-gpu-vsync");
+// Above the refresh rate, the game's own "Unlimited" frame mode takes over.
+if (!VSYNC) app.commandLine.appendSwitch("disable-gpu-vsync");
 app.commandLine.appendSwitch("force_high_performance_gpu");
 app.commandLine.appendSwitch("disable-renderer-backgrounding");
 app.commandLine.appendSwitch("disable-background-timer-throttling");
@@ -390,6 +401,38 @@ function createWindow(url) {
 ipcMain.on("aim:fullscreen", (event) => {
   const win = BrowserWindow.fromWebContents(event.sender);
   if (win && !win.isFullScreen()) win.setFullScreen(true);
+});
+
+// Desktop shell info for window.aimDesktop (preload.js): VSync state and the
+// refresh rate of each display, which the game's frame settings show.
+ipcMain.on("aim:shell:info", (event) => {
+  const win = BrowserWindow.fromWebContents(event.sender);
+  const current = win ? screen.getDisplayMatching(win.getBounds()) : screen.getPrimaryDisplay();
+  const primary = screen.getPrimaryDisplay();
+  event.returnValue = {
+    version: app.getVersion(),
+    vsync: VSYNC,
+    vsyncSaved: shellSettings.vsync === true,
+    displays: screen.getAllDisplays().map((d) => ({
+      hz: Math.round(d.displayFrequency) || null,
+      current: d.id === current.id,
+      primary: d.id === primary.id,
+    })),
+  };
+});
+ipcMain.on("aim:shell:vsync", (_event, on) => {
+  shellSettings.vsync = on === true;
+  try {
+    fs.writeFileSync(SHELL_FILE, JSON.stringify(shellSettings, null, 2));
+  } catch (err) {
+    console.log(`SHELL SETTINGS: ${err}`);
+  }
+});
+// The portable build runs from a temporary copy, so relaunch the .exe itself.
+ipcMain.on("aim:shell:restart", () => {
+  const exe = process.env.PORTABLE_EXECUTABLE_FILE;
+  app.relaunch(exe ? { execPath: exe } : undefined);
+  app.exit(0);
 });
 
 app.on("second-instance", () => {

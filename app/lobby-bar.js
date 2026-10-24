@@ -15,7 +15,8 @@
   // ---------- FPS meter ----------
   // A small readout in the bottom-right: frames per second, average frame time and
   // 1% low (the frame rate of the slowest 1% of frames over the last 5 seconds).
-  // Stays on in rounds; counts frames with requestAnimationFrame, like the game.
+  // Stays on in rounds, where it counts the frames the game draws; elsewhere it
+  // counts requestAnimationFrame.
   const METER_KEY = "es-fps-meter";
   let meter = null;
   let meterRaf = 0;
@@ -41,8 +42,25 @@
     const frames = []; // [time, frame duration]
     let last = performance.now();
     let shown = 0;
+    // In rounds, count the frames the game draws (reported by the modded
+    // performance-diagnostics.mjs): with "No frame limit" it draws on its own loop,
+    // faster or slower than requestAnimationFrame, which follows the monitor.
+    let gameLast = 0;
+    let gameSeen = -Infinity;
+    window.__aimGameFrame = (at) => {
+      const now = performance.now();
+      if (now - gameSeen > 250) frames.length = 0;
+      if (gameLast && now - gameSeen <= 250) frames.push([now, now - gameLast]);
+      gameLast = now;
+      gameSeen = now;
+    };
     const tick = (now) => {
-      frames.push([now, now - last]);
+      if (now - gameSeen > 250) {
+        if (gameLast) {
+          frames.length = 0;
+          gameLast = 0;
+        } else frames.push([now, now - last]);
+      }
       last = now;
       while (frames.length && now - frames[0][0] > 5000) frames.shift();
       if (now - shown > 250 && frames.length > 10) {
@@ -64,6 +82,7 @@
 
   function stopMeter() {
     cancelAnimationFrame(meterRaf);
+    window.__aimGameFrame = null;
     meter?.remove();
     meter = null;
   }

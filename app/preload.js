@@ -22,10 +22,31 @@ contextBridge.exposeInMainWorld("__aimDesktop", {
     save: (payload) => ipcRenderer.invoke("aim:studio:save", payload),
     remove: (code) => ipcRenderer.invoke("aim:studio:remove", code),
   },
+  // Desktop frame settings (window.aimDesktop below); see main.js.
+  setVsync: (on) => ipcRenderer.send("aim:shell:vsync", on === true),
+  restart: () => ipcRenderer.send("aim:shell:restart"),
 });
+
+const shellInfo = ipcRenderer.sendSync("aim:shell:info");
 
 webFrame.executeJavaScript(`(() => {
   const request = function () { window.__aimDesktop.fullscreen(); return Promise.resolve(); };
   Element.prototype.requestFullscreen = request;
   if (Element.prototype.webkitRequestFullscreen) Element.prototype.webkitRequestFullscreen = request;
+
+  // The game shows its desktop-only video settings (Frame mode: Unlimited, FPS cap,
+  // VSync) when it finds its desktop shell as window.aimDesktop. A plain page object,
+  // so vsyncSaved can follow the toggle until the restart.
+  const info = ${JSON.stringify(shellInfo)};
+  window.aimDesktop = {
+    shell: "electron",
+    version: info.version,
+    vsync: info.vsync,
+    vsyncSaved: info.vsyncSaved,
+    displays: info.displays,
+    setVsync(on) { this.vsyncSaved = on === true; window.__aimDesktop.setVsync(on === true); },
+    restart() { window.__aimDesktop.restart(); },
+    pageReady() {},
+    pointerLock() {},
+  };
 })()`);
