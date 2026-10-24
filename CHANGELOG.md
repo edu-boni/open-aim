@@ -2,7 +2,7 @@
 
 All notable changes to open-aim. Newest first.
 
-## [Unreleased]
+## [1.1.0] - 2026-10-24
 
 ### Added
 
@@ -17,6 +17,9 @@ All notable changes to open-aim. Newest first.
 
 ### Fixed
 
+- FPS meter counts the frames the game draws, so it shows the real frame rate with No
+  frame limit instead of the monitor's refresh rate.
+- Round start screen ("Click anywhere to start") uses the esports look again.
 - Shader warm-up no longer throws and stalls when a map's materials are replaced.
 
 ## [1.0.0] - 2026-10-23
