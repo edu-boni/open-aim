@@ -11,7 +11,8 @@
     "start": "electron .",
     "prebuild": "node ../scripts/build-scenarios.mjs",
     "build": "electron-builder --win portable nsis",
-    "check": "node ../scripts/build-scenarios.mjs --check"
+    "check": "node ../scripts/build-scenarios.mjs --check",
+    "test:import": "node --test ../scripts/test-valorant-import.cjs"
   },
   "build": {
     "appId": "local.aimtrainer.offline",
@@ -26,6 +27,10 @@
       "theme-esports.css",
       "lobby-bar.js",
       "player-tools.js",
+      "valorant-import.js",
+      "valorant-import-ui.js",
+      "valorant-import-ipc.js",
+      "valorant-import.css",
       "backups.js",
       "offline.css",
       "studio-store.js",
