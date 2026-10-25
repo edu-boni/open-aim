@@ -64,6 +64,9 @@ const OFFLINE_CSS = fs.readFileSync(path.join(__dirname, "offline.css"), "utf-8"
 const LOBBY_BAR_JS = fs.readFileSync(path.join(__dirname, "lobby-bar.js"), "utf-8");
 // Backups and sensitivity panels opened from the top bar.
 const PLAYER_TOOLS_JS = fs.readFileSync(path.join(__dirname, "player-tools.js"), "utf-8");
+const VALORANT_IMPORT_JS = ["valorant-import.js", "valorant-import-ui.js"]
+  .map(name => fs.readFileSync(path.join(__dirname, name), "utf-8")).join("\n");
+const VALORANT_IMPORT_CSS = fs.readFileSync(path.join(__dirname, "valorant-import.css"), "utf-8");
 
 // The Studio (studio/ folder, served at /studio/) replaces the site's own scenario editor:
 // /aim/studio redirects there. studio-launch.js lets the Studio start a drill in the lobby.
@@ -359,6 +362,8 @@ function createWindow(url) {
     win.webContents.insertCSS(UI_CSS);
     win.webContents.insertCSS(THEME_CSS);
     win.webContents.insertCSS(OFFLINE_CSS);
+    win.webContents.insertCSS(VALORANT_IMPORT_CSS);
+    win.webContents.executeJavaScript(VALORANT_IMPORT_JS).catch((err) => console.log(`VALORANT IMPORT: ${err}`));
     win.webContents.executeJavaScript(PLAYER_TOOLS_JS).catch((err) => console.log(`PLAYER TOOLS: ${err}`));
     win.webContents.executeJavaScript(LOBBY_BAR_JS).catch((err) => console.log(`LOBBY BAR: ${err}`));
     win.webContents.executeJavaScript(STUDIO_LAUNCH_JS).catch((err) => console.log(`STUDIO LAUNCH: ${err}`));
@@ -443,6 +448,11 @@ app.on("second-instance", () => {
 
 // Player data backups (backups.js): restore a scheduled backup, then back up, before the window opens.
 backups.register(ipcMain, () => mainWindow);
+require("./valorant-import-ipc").register(() => mainWindow, on => {
+  const next = { ...shellSettings, vsync: on };
+  fs.writeFileSync(SHELL_FILE, JSON.stringify(next, null, 2));
+  shellSettings.vsync = on;
+});
 studio.register(ipcMain);
 
 app.whenReady().then(async () => {
