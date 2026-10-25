@@ -7,6 +7,7 @@ const http = require("http");
 const path = require("path");
 const backups = require("./backups");
 const studio = require("./studio-store");
+const { patchHeadshots } = require("./headshot-patch");
 
 // Testing only: AIM_PROFILE=<folder> keeps all player data and backups in that folder,
 // so test runs never touch the real save.
@@ -282,7 +283,7 @@ function handle(req, res) {
     if (file) {
       const source = fs.readFileSync(file, "utf-8");
       if (!source.includes(SHOT_LOOP_FROM)) console.log("SHOT GRAPH: frame loop changed, graph gets no shots");
-      const body = Buffer.from(source.replace(SHOT_LOOP_FROM, SHOT_LOOP_TO), "utf-8");
+      const body = Buffer.from(patchHeadshots(source.replace(SHOT_LOOP_FROM, SHOT_LOOP_TO)), "utf-8");
       res.writeHead(200, { "Content-Type": "text/javascript", "Content-Length": body.length, "Cache-Control": "no-cache" });
       res.end(req.method === "HEAD" ? undefined : body);
       return;
