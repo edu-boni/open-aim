@@ -83,7 +83,8 @@ function createUpdater(options) {
         const hidden = release && !manual && prefs.ignoredVersion === release.version;
         return update({ status: release && !hidden ? "available" : "latest", release: release && !hidden ? { version: release.version } : null });
       } catch (error) {
-        return update({ status: "error", error: error.message === "fetch failed" ? "Could not reach GitHub. Check your connection and try again." : error.message || "Could not check for updates." });
+        release = null;
+        return update({ status: "error", release: null, error: error.message === "fetch failed" ? "Could not reach GitHub. Check your connection and try again." : error.message || "Could not check for updates." });
       }
     })();
     try { return await checking; } finally { checking = null; }
@@ -136,7 +137,9 @@ function createUpdater(options) {
       return snapshot();
     } catch (error) {
       installing = false;
-      fs.rmSync(directory, { recursive: true, force: true });
+      // Antivirus scanning can briefly lock the download on Windows. A cleanup
+      // failure must not leave the UI stuck in the downloading state.
+      try { fs.rmSync(directory, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 }); } catch {}
       return update({ status: "available", progress: 0, error: controller.signal.aborted
         ? "Download cancelled. Nothing was installed." : error.message });
     } finally { controller = null; }

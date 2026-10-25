@@ -110,3 +110,22 @@ test('stale download cleanup keeps recent installers and unrelated data', t => {
   assert(fs.existsSync(path.join(cache, 'installer-recent', 'file')));
   assert(fs.existsSync(path.join(cache, 'unrelated', 'file')));
 });
+test('a failed recheck clears the previous release instead of offering an unusable update', async t => {
+  let offline = false;
+  const f = fixture(t, { fetchImpl: async () => { if (offline) throw Error('fetch failed'); return new Response(JSON.stringify(release())); } });
+  assert.equal((await f.updater.check()).status, 'available'); offline = true;
+  const state = await f.updater.check(true);
+  assert.equal(state.status, 'error'); assert.equal(state.release, null);
+  await assert.rejects(f.updater.install(), /Check for an update/);
+});
+test('a locked failed download does not leave the UI stuck or start the installer', async t => {
+  const f = fixture(t, { fetchImpl: async url => new Response(url.includes('api.github.com') ? JSON.stringify(release()) : 'corrupt') });
+  await f.updater.check();
+  const remove = fs.rmSync;
+  t.mock.method(fs, 'rmSync', (directory, options) => {
+    if (String(directory).startsWith(path.join(f.data, 'update-downloads') + path.sep)) throw Object.assign(Error('File locked'), { code: 'EBUSY' });
+    return remove(directory, options);
+  });
+  const state = await f.updater.install();
+  assert.equal(state.status, 'available'); assert.match(state.error, /verification failed/); assert(!f.launched);
+});
