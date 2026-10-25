@@ -31,6 +31,8 @@
       "studio-store.js",
       "studio-launch.js",
       "shooting-error.js",
+      "headshot-patch.js",
+      "headshot-effects.js",
       "studio/**/*",
       "training-set.json",
       "translations.js",
