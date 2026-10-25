@@ -5,6 +5,10 @@
 const { contextBridge, ipcRenderer, webFrame } = require("electron");
 
 contextBridge.exposeInMainWorld("__aimDesktop", {
+  valorant: {
+    choose: () => ipcRenderer.invoke("aim:valorant:choose"),
+    setVsync: on => ipcRenderer.invoke("aim:valorant:vsync", on),
+  },
   fullscreen: () => ipcRenderer.send("aim:fullscreen"),
   // Backups panel (lobby-bar.js); see backups.js.
   backups: {
